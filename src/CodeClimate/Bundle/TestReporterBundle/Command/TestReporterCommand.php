@@ -1,8 +1,9 @@
 <?php
 namespace CodeClimate\Bundle\TestReporterBundle\Command;
 
-use CodeClimate\Bundle\TestReporterBundle\CoverageCollector;
 use CodeClimate\Bundle\TestReporterBundle\ApiClient;
+use CodeClimate\Bundle\TestReporterBundle\Entity\Json;
+use CodeClimate\Bundle\TestReporterBundle\Coverage\Clover;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -53,8 +54,13 @@ class TestReporterCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $ret = 0;
-        $collector = new CoverageCollector($input->getOption('coverage-report'));
-        $json = $collector->collectAsJson();
+        $token = $_SERVER['CODECLIMATE_REPO_TOKEN'];
+        $coverage = array();
+
+        foreach ($input->getOption('coverage-report') as $report) {
+            $coverage[] = new Clover($report);
+        }
+        $json = new Json($coverage, $token);
 
         if ($input->getOption('stdout')) {
             $output->writeln((string)$json);
