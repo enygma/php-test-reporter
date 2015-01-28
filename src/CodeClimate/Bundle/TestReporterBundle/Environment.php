@@ -1,0 +1,14 @@
+<?php
+
+namespace CodeClimate\Bundle\TestReporterBundle;
+
+class Environment
+{
+    public static function evaluate()
+    {
+        return array(
+            'pwd' => getcwd(),
+            'package_version' => Version::VERSION
+        );
+    }
+}
