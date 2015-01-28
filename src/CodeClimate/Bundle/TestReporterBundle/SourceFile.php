@@ -6,6 +6,12 @@ class SourceFile
 {
     private $clover;
 
+    /**
+     * Run the evaluation on the clover coverage data
+     *
+     * @param Entity\Clover $clover Clover coverage file
+     * @return array Source file information
+     */
     public static function evaluate($clover)
     {
         $sourceFiles = array();
@@ -30,14 +36,20 @@ class SourceFile
             $sourceFiles[] = array(
                 'name' => str_replace(getcwd().'/', '', $file['name']),
                 'coverage' => '['.$coverageString.']',
-                'blob_id' => $this->generateBlobId($fileContents)
+                'blob_id' => self::generateBlobId($fileContents)
             );
         }
         return $sourceFiles;
     }
 
+    /**
+     * Generate the blob ID hash (sha1)
+     *
+     * @param string $contents File contents
+     * @return string SHA1 hash for blob id
+     */
     public function generateBlobId($contents)
     {
-        return sha1('blob '.strlen($fileContents)."\0".$fileContents);
+        return sha1('blob '.strlen($contents)."\0".$contents);
     }
 }
